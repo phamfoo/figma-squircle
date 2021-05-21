@@ -1,0 +1,49 @@
+{
+  "name": "figma-squircle",
+  "description": "Figma-flavored squircles for everyone",
+  "author": "Tien Pham",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/figma-squircle.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build && husky install",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "peerDependencies": {},
+  "prettier": {
+    "printWidth": 80,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "quoteProps": "consistent"
+  },
+  "size-limit": [
+    {
+      "path": "dist/figma-squircle.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/figma-squircle.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.10.3",
+    "husky": "^6.0.0",
+    "size-limit": "^4.10.3",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.4"
+  }
+}
