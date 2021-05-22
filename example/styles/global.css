@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[data-reach-slider-track] {
+  @apply bg-gray-700 !important;
+}
+[data-reach-slider-range] {
+  @apply bg-gray-700 !important;
+}
+[data-reach-slider-handle] {
+  @apply bg-indigo-600 active:bg-indigo-800 w-6 h-6 rounded-full !important;
+}
