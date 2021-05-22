@@ -15,8 +15,8 @@ import GithubCorner from 'react-github-corner'
 
 export default function Home() {
   const [size, setSize] = useState(300)
-  const [radius, setRadius] = useState(48)
-  const [smoothing, setSmoothing] = useState(0.8)
+  const [cornerRadius, setCornerRadius] = useState(48)
+  const [cornerSmoothing, setCornerSmoothing] = useState(0.8)
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 md:flex-row">
@@ -37,8 +37,8 @@ export default function Home() {
             clipPath: `path('${getSvgPath({
               width: size,
               height: size,
-              smoothing,
-              radius,
+              cornerSmoothing,
+              cornerRadius,
             })}')`,
           }}
           className="bg-indigo-600"
@@ -77,9 +77,9 @@ export default function Home() {
             <div className="pt-8 md:pt-12" />
 
             <Slider
-              label="Radius"
-              value={radius}
-              onChange={setRadius}
+              label="Corner radius"
+              value={cornerRadius}
+              onChange={setCornerRadius}
               min={10}
               max={100}
               step={1}
@@ -88,9 +88,9 @@ export default function Home() {
             <div className="pt-8 md:pt-12" />
 
             <Slider
-              label="Smoothing"
-              value={smoothing}
-              onChange={setSmoothing}
+              label="Corner smoothing"
+              value={cornerSmoothing}
+              onChange={setCornerSmoothing}
               min={0}
               max={1}
               step={0.01}
@@ -105,8 +105,8 @@ export default function Home() {
                 const svg = createSVG({
                   width: size,
                   height: size,
-                  radius,
-                  smoothing,
+                  cornerRadius,
+                  cornerSmoothing,
                 })
 
                 const blob = new Blob([svg], {
@@ -126,8 +126,8 @@ export default function Home() {
                 const svg = createSVG({
                   width: size,
                   height: size,
-                  radius,
-                  smoothing,
+                  cornerRadius,
+                  cornerSmoothing,
                 })
 
                 copy(svg)
@@ -168,8 +168,8 @@ const OutlineButton = forwardRef<
           ? getSvgPath({
               width: rect.width,
               height: rect.height,
-              radius: 0.25 * rect.height,
-              smoothing: 1,
+              cornerRadius: 0.25 * rect.height,
+              cornerSmoothing: 1,
             })
           : null
 
@@ -185,8 +185,8 @@ const OutlineButton = forwardRef<
                   ? getSvgPath({
                       width: rect.width,
                       height: rect.height,
-                      radius: 0.25 * rect.height,
-                      smoothing: 1,
+                      cornerRadius: 0.25 * rect.height,
+                      cornerSmoothing: 1,
                     })
                   : null
 
@@ -219,8 +219,8 @@ const SolidButton = forwardRef<HTMLButtonElement, HTMLProps<HTMLButtonElement>>(
             ? getSvgPath({
                 width: rect.width,
                 height: rect.height,
-                radius: 0.25 * rect.height,
-                smoothing: 1,
+                cornerRadius: 0.25 * rect.height,
+                cornerSmoothing: 1,
               })
             : null
 
