@@ -7,10 +7,6 @@
   "main": "dist/index.js",
   "module": "dist/figma-squircle.esm.js",
   "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
@@ -20,7 +16,27 @@
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "peerDependencies": {},
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.10.3",
+    "husky": "^6.0.0",
+    "size-limit": "^4.10.3",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.4"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "squircle",
+    "react",
+    "figma"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tienphaw/figma-squircle.git"
+  },
   "prettier": {
     "printWidth": 80,
     "semi": false,
@@ -37,13 +53,5 @@
       "path": "dist/figma-squircle.esm.js",
       "limit": "10 KB"
     }
-  ],
-  "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.10.3",
-    "husky": "^6.0.0",
-    "size-limit": "^4.10.3",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.2.0",
-    "typescript": "^4.2.4"
-  }
+  ]
 }
