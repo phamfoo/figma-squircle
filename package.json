@@ -2,7 +2,7 @@
   "name": "figma-squircle",
   "description": "Figma-flavored squircles for everyone",
   "author": "Tien Pham",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "main": "dist/index.js",
   "module": "dist/figma-squircle.esm.js",
