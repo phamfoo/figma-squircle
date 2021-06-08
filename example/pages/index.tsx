@@ -1,4 +1,4 @@
-import { forwardRef, HTMLProps, useState } from 'react'
+import { forwardRef, HTMLProps, useState, RefObject, ReactElement } from 'react'
 import Head from 'next/head'
 import {
   SliderProps as ReachSliderProps,
@@ -29,7 +29,21 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex items-center justify-center flex-1">
+      <main className="flex items-center justify-center flex-1 relative">
+        <Toaster
+          toastOptions={{
+            duration: 2400,
+          }}
+          position="top-center"
+          containerStyle={{
+            position: 'absolute',
+            top: 20,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        />
+
         <div
           style={{
             width: size,
@@ -140,14 +154,6 @@ export default function Home() {
         </div>
       </div>
 
-      <Toaster
-        toastOptions={{
-          duration: 2400,
-        }}
-        position="top-center"
-        containerStyle={{ width: '100%', backgroundColor: 'blue' }}
-      />
-
       <GithubCorner
         href="https://github.com/tienphaw/figma-squircle"
         direction="left"
@@ -162,34 +168,16 @@ const OutlineButton = forwardRef<
   HTMLProps<HTMLButtonElement>
 >((props, buttonRef) => {
   return (
-    <Rect>
-      {({ rect, ref }) => {
-        const outerSquirclePath = rect
-          ? getSvgPath({
-              width: rect.width,
-              height: rect.height,
-              cornerRadius: 0.25 * rect.height,
-              cornerSmoothing: 1,
-            })
-          : null
-
+    <SquircleButtonContainer>
+      {({ squirclePath: outerSquirclePath, ref }) => {
         return (
           <div
             ref={ref}
             className="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-800"
             style={{ padding: 2, clipPath: `path('${outerSquirclePath}')` }}
           >
-            <Rect>
-              {({ rect, ref }) => {
-                const innerSquirclePath = rect
-                  ? getSvgPath({
-                      width: rect.width,
-                      height: rect.height,
-                      cornerRadius: 0.25 * rect.height,
-                      cornerSmoothing: 1,
-                    })
-                  : null
-
+            <SquircleButtonContainer>
+              {({ squirclePath: innerSquirclePath, ref }) => {
                 return (
                   <div ref={ref}>
                     <button
@@ -202,28 +190,19 @@ const OutlineButton = forwardRef<
                   </div>
                 )
               }}
-            </Rect>
+            </SquircleButtonContainer>
           </div>
         )
       }}
-    </Rect>
+    </SquircleButtonContainer>
   )
 })
 
 const SolidButton = forwardRef<HTMLButtonElement, HTMLProps<HTMLButtonElement>>(
   (props, buttonRef) => {
     return (
-      <Rect>
-        {({ rect, ref }) => {
-          const squirclePath = rect
-            ? getSvgPath({
-                width: rect.width,
-                height: rect.height,
-                cornerRadius: 0.25 * rect.height,
-                cornerSmoothing: 1,
-              })
-            : null
-
+      <SquircleButtonContainer>
+        {({ squirclePath, ref }) => {
           return (
             <div ref={ref}>
               <button
@@ -236,10 +215,36 @@ const SolidButton = forwardRef<HTMLButtonElement, HTMLProps<HTMLButtonElement>>(
             </div>
           )
         }}
-      </Rect>
+      </SquircleButtonContainer>
     )
   }
 )
+
+interface SquircleButtonContainerProps {
+  children: (args: {
+    squirclePath: string
+    ref: RefObject<any>
+  }) => ReactElement
+}
+
+function SquircleButtonContainer({ children }: SquircleButtonContainerProps) {
+  return (
+    <Rect>
+      {({ rect, ref }) => {
+        const squirclePath = rect
+          ? getSvgPath({
+              width: rect.width,
+              height: rect.height,
+              cornerRadius: 0.25 * rect.height,
+              cornerSmoothing: 1,
+            })
+          : null
+
+        return children({ ref, squirclePath })
+      }}
+    </Rect>
+  )
+}
 
 interface SliderProps extends ReachSliderProps {
   label: string
