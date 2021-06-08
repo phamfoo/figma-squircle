@@ -4,6 +4,9 @@
 
 > Figma-flavored squircles for everyone
 
+## Disclaimer
+> This package is not an official product from the Figma team and does not guarantee to produce the same results as you would get with Figma.
+
 ## Installation
 
 ```sh
@@ -55,5 +58,5 @@ function ProfilePicture() {
 
 ## Thanks
 
-- Figma team for publishing [this article](https://www.figma.com/blog/desperately-seeking-squircles/) and [MartinRGB](https://github.com/MartinRGB/Figma_Squircles_Approximation) for [figuring out all the math](https://github.com/MartinRGB/Figma_Squircles_Approximation) behind it.
-- [George Francis](https://georgefrancis.dev/) for creating [Squircley](https://squircley.app/), which was my introduction to squircles.
+- Figma team for publishing [this article](https://www.figma.com/blog/desperately-seeking-squircles/) and [MartinRGB](https://github.com/MartinRGB) for [figuring out all the math](https://github.com/MartinRGB/Figma_Squircles_Approximation) behind it.
+- [George Francis](https://github.com/georgedoescode) for creating [Squircley](https://squircley.app/), which was my introduction to squircles.
