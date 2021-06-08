@@ -11,42 +11,56 @@ export function getSvgPath({
   width,
   height,
 }: FigmaSquircleParams) {
-  cornerRadius = Math.min(cornerRadius, width / 2, height / 2)
+  const maxRadius = Math.min(width, height) / 2
+  cornerRadius = Math.min(cornerRadius, maxRadius)
 
-  // Keeping these variable names the same as the original code for now
+  // The article from figma's blog
+  // https://www.figma.com/blog/desperately-seeking-squircles/
+  //
+  // The original code
   // https://github.com/MartinRGB/Figma_Squircles_Approximation/blob/bf29714aab58c54329f3ca130ffa16d39a2ff08c/js/rounded-corners.js#L64
-  const shortest_l = Math.min(width, height)
 
-  const p = Math.min(shortest_l / 2, (1 + cornerSmoothing) * cornerRadius)
+  // 12.2 from the article
+  const p = Math.min((1 + cornerSmoothing) * cornerRadius, maxRadius)
 
-  let angle_alpha: number, angle_beta: number
-  if (cornerRadius > shortest_l / 4) {
-    const change_percentage = (cornerRadius - shortest_l / 4) / (shortest_l / 4)
-    angle_beta = 90 * (1 - cornerSmoothing * (1 - change_percentage))
-    angle_alpha = 45 * cornerSmoothing * (1 - change_percentage)
+  let angleAlpha: number, angleBeta: number
+
+  if (cornerRadius <= maxRadius / 2) {
+    angleBeta = 90 * (1 - cornerSmoothing)
+    angleAlpha = 45 * cornerSmoothing
   } else {
-    angle_beta = 90 * (1 - cornerSmoothing)
-    angle_alpha = 45 * cornerSmoothing
+    // When `cornerRadius` is larger and `maxRadius / 2`,
+    // these angles also depend on `cornerRadius` and `maxRadius / 2`
+    //
+    // I did a few tests in Figma and this code generated similar but not identical results
+    // `diffRatio` was called `change_percentage` in the orignal code
+    const diffRatio = (cornerRadius - maxRadius / 2) / (maxRadius / 2)
+
+    angleBeta = 90 * (1 - cornerSmoothing * (1 - diffRatio))
+    angleAlpha = 45 * cornerSmoothing * (1 - diffRatio)
   }
 
-  const angle_theta = (90 - angle_beta) / 2
+  const angleTheta = (90 - angleBeta) / 2
 
-  const d_div_c = Math.tan(toRadians(angle_alpha))
-  const h_longest = cornerRadius * Math.tan(toRadians(angle_theta / 2))
+  // This was called `h_longest` in the original code
+  // In the article this is the distance between 2 control points: P3 and P4
+  const p3ToP4Distance = cornerRadius * Math.tan(toRadians(angleTheta / 2))
 
-  const l =
-    Math.sin(toRadians(angle_beta / 2)) * cornerRadius * Math.pow(2, 1 / 2)
-  const c = h_longest * Math.cos(toRadians(angle_alpha))
-  const d = c * d_div_c
-  const b = (p - l - (1 + d_div_c) * c) / 3
+  // This was called `l` in the original code
+  const circularSectionLength =
+    Math.sin(toRadians(angleBeta / 2)) * cornerRadius * Math.sqrt(2)
+
+  // a, b, c and d are from 11.1 in the article
+  const c = p3ToP4Distance * Math.cos(toRadians(angleAlpha))
+  const d = c * Math.tan(toRadians(angleAlpha))
+  const b = (p - circularSectionLength - c - d) / 3
   const a = 2 * b
 
   return `
-  M ${width / 2} 0
-  L ${Math.max(width / 2, width - p)} 0
+  M ${Math.max(width / 2, width - p)} 0
   C ${width - (p - a)} 0 ${width - (p - a - b)} 0 ${width -
     (p - a - b - c)} ${d}
-  a ${cornerRadius} ${cornerRadius} 0 0 1 ${l} ${l}
+  a ${cornerRadius} ${cornerRadius} 0 0 1 ${circularSectionLength} ${circularSectionLength}
   C ${width} ${p - a - b}
       ${width} ${p - a}
       ${width} ${Math.min(height / 2, p)}
@@ -54,7 +68,7 @@ export function getSvgPath({
   C ${width} ${height - (p - a)}
     ${width} ${height - (p - a - b)}
     ${width - d} ${height - (p - a - b - c)}
-  a ${cornerRadius} ${cornerRadius} 0 0 1 -${l} ${l}
+  a ${cornerRadius} ${cornerRadius} 0 0 1 -${circularSectionLength} ${circularSectionLength}
   C ${width - (p - a - b)} ${height}
         ${width - (p - a)} ${height}
         ${Math.max(width / 2, width - p)} ${height}
@@ -62,7 +76,7 @@ export function getSvgPath({
   C ${p - a} ${height}
     ${p - a - b} ${height}
     ${p - a - b - c} ${height - d}
-  a ${cornerRadius} ${cornerRadius} 0 0 1 -${l} -${l}
+  a ${cornerRadius} ${cornerRadius} 0 0 1 -${circularSectionLength} -${circularSectionLength}
   C 0 ${height - (p - a - b)}
     0 ${height - (p - a)}
     0 ${Math.max(height / 2, height - p)}
@@ -70,12 +84,14 @@ export function getSvgPath({
   C 0 ${p - a}
     0 ${p - a - b}
     ${d} ${p - a - b - c}
-  a ${cornerRadius} ${cornerRadius} 0 0 1 ${l} -${l}
+  a ${cornerRadius} ${cornerRadius} 0 0 1 ${circularSectionLength} -${circularSectionLength}
   C ${p - a - b} 0
     ${p - a} 0
     ${+Math.min(width / 2, p)} 0
   Z
-  `.replace(/[\t\s\n]+/g, ' ')
+  `
+    .replace(/[\t\s\n]+/g, ' ')
+    .trim()
 }
 
 function toRadians(degrees: number) {
