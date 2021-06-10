@@ -29,7 +29,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex items-center justify-center flex-1 relative">
+      <main className="relative flex items-center justify-center flex-1">
         <Toaster
           toastOptions={{
             duration: 2400,
@@ -44,19 +44,21 @@ export default function Home() {
           }}
         />
 
-        <div
-          style={{
-            width: size,
-            height: size,
-            clipPath: `path('${getSvgPath({
+        <svg
+          width={size}
+          height={size}
+          xmlns="http://www.w3.org/2000/svg"
+          className="fill-current text-indigo-600"
+        >
+          <path
+            d={`${getSvgPath({
               width: size,
               height: size,
               cornerSmoothing,
               cornerRadius,
-            })}')`,
-          }}
-          className="bg-indigo-600"
-        />
+            })}`}
+          />
+        </svg>
       </main>
 
       {/* Sidebar */}

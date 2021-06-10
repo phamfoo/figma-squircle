@@ -6,8 +6,8 @@
   @apply bg-gray-700 !important;
 }
 [data-reach-slider-range] {
-  @apply bg-gray-700 !important;
+  @apply bg-indigo-600 !important;
 }
 [data-reach-slider-handle] {
-  @apply bg-indigo-600 active:bg-indigo-800 w-6 h-6 rounded-full !important;
+  @apply bg-gray-100 active:bg-gray-400 w-6 h-6 rounded-full !important;
 }
