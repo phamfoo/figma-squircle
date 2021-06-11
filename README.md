@@ -5,7 +5,16 @@
 > Figma-flavored squircles for everyone
 
 ## Disclaimer
-> This package is not an official product from the Figma team and does not guarantee to produce the same results as you would get with Figma.
+
+> This library is not an official product from the Figma team and does not guarantee to produce the same results as you would get in Figma.
+
+## What is this?
+
+Figma has a great feature called [corner smoothing](https://help.figma.com/hc/en-us/articles/360050986854-Adjust-corner-radius-and-smoothing), allowing you to create rounded shapes with a seamless continuous curve (squircles).
+
+![](demo.png)
+
+This library helps you bring those squircles to your apps.
 
 ## Installation
 
@@ -27,8 +36,8 @@ import { getSvgPath } from 'figma-squircle'
 const svgPath = getSvgPath({
   width: 200,
   height: 200,
-  radius: 24,
-  smoothing: 0.8, // Smoothing ranges from 0 to 1
+  cornerRadius: 24,
+  cornerSmoothing: 0.8, // cornerSmoothing goes from 0 to 1
 })
 
 // svgPath can now be used to create SVG elements
