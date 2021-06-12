@@ -69,3 +69,7 @@ function ProfilePicture() {
 
 - Figma team for publishing [this article](https://www.figma.com/blog/desperately-seeking-squircles/) and [MartinRGB](https://github.com/MartinRGB) for [figuring out all the math](https://github.com/MartinRGB/Figma_Squircles_Approximation) behind it.
 - [George Francis](https://github.com/georgedoescode) for creating [Squircley](https://squircley.app/), which was my introduction to squircles.
+
+## Related
+
+- https://github.com/tienphaw/react-native-figma-squircle
