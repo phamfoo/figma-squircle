@@ -76,9 +76,17 @@ function ProfilePicture() {
 
 ## Squircle Params
 
+### width
+
+> `number` | **Required**
+
+### height
+
+> `number` | **Required**
+
 ### cornerSmoothing
 
-> `number`
+> `number` | **Required**
 
 Goes from 0 to 1, controls how smooth the corners should be.
 
@@ -99,14 +107,6 @@ Goes from 0 to 1, controls how smooth the corners should be.
 > `number`
 
 ### bottomLeftCornerRadius
-
-> `number`
-
-### width
-
-> `number`
-
-### height
 
 > `number`
 
