@@ -1,16 +1,219 @@
 export interface FigmaSquircleParams {
-  cornerRadius: number
+  cornerRadius?: number
+  topLeftCornerRadius?: number
+  topRightCornerRadius?: number
+  bottomRightCornerRadius?: number
+  bottomLeftCornerRadius?: number
   cornerSmoothing: number
   width: number
   height: number
 }
 
 export function getSvgPath({
-  cornerRadius,
+  cornerRadius = 0,
+  topLeftCornerRadius,
+  topRightCornerRadius,
+  bottomRightCornerRadius,
+  bottomLeftCornerRadius,
   cornerSmoothing,
   width,
   height,
 }: FigmaSquircleParams) {
+  const defaultPathParams = getPathParamsForCorner({
+    width,
+    height,
+    cornerRadius,
+    cornerSmoothing,
+  })
+
+  // Most of the time, all corners will have the same radius
+  // Instead of calculating path params for all 4 corners,
+  // we want to use the default path params whenever possible
+  const topLeftPathPathParams =
+    topLeftCornerRadius !== undefined
+      ? getPathParamsForCorner({
+          width,
+          height,
+          cornerRadius: topLeftCornerRadius,
+          cornerSmoothing,
+        })
+      : defaultPathParams
+
+  const topRightPathPathParams =
+    topRightCornerRadius !== undefined
+      ? getPathParamsForCorner({
+          width,
+          height,
+          cornerRadius: topRightCornerRadius,
+          cornerSmoothing,
+        })
+      : defaultPathParams
+
+  const bottomRightPathPathParams =
+    bottomRightCornerRadius !== undefined
+      ? getPathParamsForCorner({
+          width,
+          height,
+          cornerRadius: bottomRightCornerRadius,
+          cornerSmoothing,
+        })
+      : defaultPathParams
+
+  const bottomLeftPathPathParams =
+    bottomLeftCornerRadius !== undefined
+      ? getPathParamsForCorner({
+          width,
+          height,
+          cornerRadius: bottomLeftCornerRadius,
+          cornerSmoothing,
+        })
+      : defaultPathParams
+
+  return `
+    ${drawTopRightPath(topRightPathPathParams)}
+    ${drawBottomRightPath(bottomRightPathPathParams)}
+    ${drawBottomLeftPath(bottomLeftPathPathParams)}
+    ${drawTopLeftPath(topLeftPathPathParams)}
+  `
+    .replace(/[\t\s\n]+/g, ' ')
+    .trim()
+}
+
+function drawTopRightPath({
+  cornerRadius,
+  width,
+  height,
+  a,
+  b,
+  c,
+  d,
+  p,
+  circularSectionLength,
+}: CornerPathParams) {
+  if (cornerRadius) {
+    return `
+    M ${Math.max(width / 2, width - p)} 0
+    C ${width - (p - a)} 0 ${width - (p - a - b)} 0 ${width -
+      (p - a - b - c)} ${d}
+    a ${cornerRadius} ${cornerRadius} 0 0 1 ${circularSectionLength} ${circularSectionLength}
+    C ${width} ${p - a - b}
+        ${width} ${p - a}
+        ${width} ${Math.min(height / 2, p)}`
+  } else {
+    return `M ${width / 2} 0
+    L ${width} ${0}
+    L ${width} ${height / 2}`
+  }
+}
+
+function drawBottomRightPath({
+  cornerRadius,
+  width,
+  height,
+  a,
+  b,
+  c,
+  d,
+  p,
+  circularSectionLength,
+}: CornerPathParams) {
+  if (cornerRadius) {
+    return `
+    L ${width} ${Math.max(height / 2, height - p)}
+    C ${width} ${height - (p - a)}
+      ${width} ${height - (p - a - b)}
+      ${width - d} ${height - (p - a - b - c)}
+    a ${cornerRadius} ${cornerRadius} 0 0 1 -${circularSectionLength} ${circularSectionLength}
+    C ${width - (p - a - b)} ${height}
+      ${width - (p - a)} ${height}
+      ${Math.max(width / 2, width - p)} ${height}`
+  } else {
+    return `L ${width} ${height}
+    L ${width / 2} ${height}`
+  }
+}
+
+function drawBottomLeftPath({
+  cornerRadius,
+  width,
+  height,
+  a,
+  b,
+  c,
+  d,
+  p,
+  circularSectionLength,
+}: CornerPathParams) {
+  if (cornerRadius) {
+    return `
+    L ${Math.min(width / 2, p)} ${height}
+    C ${p - a} ${height}
+      ${p - a - b} ${height}
+      ${p - a - b - c} ${height - d}
+    a ${cornerRadius} ${cornerRadius} 0 0 1 -${circularSectionLength} -${circularSectionLength}
+    C 0 ${height - (p - a - b)}
+      0 ${height - (p - a)}
+      0 ${Math.max(height / 2, height - p)}`
+  } else {
+    return `
+    L ${0} ${height}
+    L ${0} ${height / 2}`
+  }
+}
+
+function drawTopLeftPath({
+  cornerRadius,
+  width,
+  height,
+  a,
+  b,
+  c,
+  d,
+  p,
+  circularSectionLength,
+}: CornerPathParams) {
+  if (cornerRadius) {
+    return `
+    L 0 ${Math.min(height / 2, p)}
+    C 0 ${p - a}
+      0 ${p - a - b}
+      ${d} ${p - a - b - c}
+    a ${cornerRadius} ${cornerRadius} 0 0 1 ${circularSectionLength} -${circularSectionLength}
+    C ${p - a - b} 0
+      ${p - a} 0
+      ${+Math.min(width / 2, p)} 0
+    Z`
+  } else {
+    return `L ${0} ${0}
+    Z`
+  }
+}
+
+interface CornerParams {
+  cornerRadius: number
+  cornerSmoothing: number
+  width: number
+  height: number
+}
+
+interface CornerPathParams {
+  a: number
+  b: number
+  c: number
+  d: number
+  p: number
+  cornerRadius: number
+  circularSectionLength: number
+  width: number
+  height: number
+}
+
+function getPathParamsForCorner({
+  cornerRadius,
+  cornerSmoothing,
+  width,
+  height,
+}: CornerParams): CornerPathParams {
   const maxRadius = Math.min(width, height) / 2
   cornerRadius = Math.min(cornerRadius, maxRadius)
 
@@ -56,42 +259,17 @@ export function getSvgPath({
   const b = (p - circularSectionLength - c - d) / 3
   const a = 2 * b
 
-  return `
-  M ${Math.max(width / 2, width - p)} 0
-  C ${width - (p - a)} 0 ${width - (p - a - b)} 0 ${width -
-    (p - a - b - c)} ${d}
-  a ${cornerRadius} ${cornerRadius} 0 0 1 ${circularSectionLength} ${circularSectionLength}
-  C ${width} ${p - a - b}
-      ${width} ${p - a}
-      ${width} ${Math.min(height / 2, p)}
-  L ${width} ${Math.max(height / 2, height - p)}
-  C ${width} ${height - (p - a)}
-    ${width} ${height - (p - a - b)}
-    ${width - d} ${height - (p - a - b - c)}
-  a ${cornerRadius} ${cornerRadius} 0 0 1 -${circularSectionLength} ${circularSectionLength}
-  C ${width - (p - a - b)} ${height}
-        ${width - (p - a)} ${height}
-        ${Math.max(width / 2, width - p)} ${height}
-  L ${Math.min(width / 2, p)} ${height}
-  C ${p - a} ${height}
-    ${p - a - b} ${height}
-    ${p - a - b - c} ${height - d}
-  a ${cornerRadius} ${cornerRadius} 0 0 1 -${circularSectionLength} -${circularSectionLength}
-  C 0 ${height - (p - a - b)}
-    0 ${height - (p - a)}
-    0 ${Math.max(height / 2, height - p)}
-  L 0 ${Math.min(height / 2, p)}
-  C 0 ${p - a}
-    0 ${p - a - b}
-    ${d} ${p - a - b - c}
-  a ${cornerRadius} ${cornerRadius} 0 0 1 ${circularSectionLength} -${circularSectionLength}
-  C ${p - a - b} 0
-    ${p - a} 0
-    ${+Math.min(width / 2, p)} 0
-  Z
-  `
-    .replace(/[\t\s\n]+/g, ' ')
-    .trim()
+  return {
+    a,
+    b,
+    c,
+    d,
+    p,
+    width,
+    height,
+    circularSectionLength,
+    cornerRadius,
+  }
 }
 
 function toRadians(degrees: number) {

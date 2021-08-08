@@ -36,8 +36,17 @@ import { getSvgPath } from 'figma-squircle'
 const svgPath = getSvgPath({
   width: 200,
   height: 200,
-  cornerRadius: 24,
+  cornerRadius: 24, // defaults to 0
   cornerSmoothing: 0.8, // cornerSmoothing goes from 0 to 1
+})
+
+const svgPath = getSvgPath({
+  width: 200,
+  height: 200,
+  cornerRadius: 24,
+  cornerSmoothing: 0.8,
+  // You can also adjust the radius of each corner individually
+  topLeftCornerRadius: 48,
 })
 
 // svgPath can now be used to create SVG elements
@@ -64,6 +73,42 @@ function ProfilePicture() {
   )
 }
 ```
+
+## Squircle Params
+
+### cornerSmoothing
+
+> `number`
+
+Goes from 0 to 1, controls how smooth the corners should be.
+
+### cornerRadius
+
+> `number` | defaults to `0`
+
+### topLeftCornerRadius
+
+> `number`
+
+### topRightCornerRadius
+
+> `number`
+
+### bottomRightCornerRadius
+
+> `number`
+
+### bottomLeftCornerRadius
+
+> `number`
+
+### width
+
+> `number`
+
+### height
+
+> `number`
 
 ## Thanks
 
