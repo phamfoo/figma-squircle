@@ -208,6 +208,11 @@ interface CornerPathParams {
   height: number
 }
 
+// The article from figma's blog
+// https://www.figma.com/blog/desperately-seeking-squircles/
+//
+// The original code by MartinRGB
+// https://github.com/MartinRGB/Figma_Squircles_Approximation/blob/bf29714aab58c54329f3ca130ffa16d39a2ff08c/js/rounded-corners.js#L64
 function getPathParamsForCorner({
   cornerRadius,
   cornerSmoothing,
@@ -217,32 +222,20 @@ function getPathParamsForCorner({
   const maxRadius = Math.min(width, height) / 2
   cornerRadius = Math.min(cornerRadius, maxRadius)
 
-  // The article from figma's blog
-  // https://www.figma.com/blog/desperately-seeking-squircles/
+  // From figure 12.2 in the article
+  // p = (1 + cornerSmoothing) * q
+  // in this case q = R because theta = 90deg
   //
-  // The original code
-  // https://github.com/MartinRGB/Figma_Squircles_Approximation/blob/bf29714aab58c54329f3ca130ffa16d39a2ff08c/js/rounded-corners.js#L64
+  // Also, when there's not enough space left, we need to back off the smoothing
+  const maxCornerSmoothing = maxRadius / cornerRadius - 1
+  cornerSmoothing = Math.min(cornerSmoothing, maxCornerSmoothing)
 
-  // 12.2 from the article
-  const p = Math.min((1 + cornerSmoothing) * cornerRadius, maxRadius)
+  const p = (1 + cornerSmoothing) * cornerRadius
 
-  let angleAlpha: number, angleBeta: number
-
-  if (cornerRadius <= maxRadius / 2) {
-    angleBeta = 90 * (1 - cornerSmoothing)
-    angleAlpha = 45 * cornerSmoothing
-  } else {
-    // When `cornerRadius` is larger and `maxRadius / 2`,
-    // these angles also depend on `cornerRadius` and `maxRadius / 2`
-    //
-    // I did a few tests in Figma and this code generated similar but not identical results
-    // `diffRatio` was called `change_percentage` in the orignal code
-    const diffRatio = (cornerRadius - maxRadius / 2) / (maxRadius / 2)
-
-    angleBeta = 90 * (1 - cornerSmoothing * (1 - diffRatio))
-    angleAlpha = 45 * cornerSmoothing * (1 - diffRatio)
-  }
-
+  // These are the angles used in the original code
+  // angleTheta is not the same as theta in the article
+  const angleBeta = 90 * (1 - cornerSmoothing)
+  const angleAlpha = 45 * cornerSmoothing
   const angleTheta = (90 - angleBeta) / 2
 
   // This was called `h_longest` in the original code
@@ -253,7 +246,7 @@ function getPathParamsForCorner({
   const circularSectionLength =
     Math.sin(toRadians(angleBeta / 2)) * cornerRadius * Math.sqrt(2)
 
-  // a, b, c and d are from 11.1 in the article
+  // a, b, c and d are from figure 11.1 in the article
   const c = p3ToP4Distance * Math.cos(toRadians(angleAlpha))
   const d = c * Math.tan(toRadians(angleAlpha))
   const b = (p - circularSectionLength - c - d) / 3
