@@ -2,12 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+[data-reach-slider-marker] {
+  @apply bg-gray-500 h-4 w-0.5 !important;
+}
 [data-reach-slider-track] {
-  @apply bg-gray-700 !important;
+  @apply bg-gray-700 h-4 rounded-full !important;
 }
 [data-reach-slider-range] {
-  @apply bg-indigo-600 !important;
+  @apply bg-gray-700 !important;
 }
 [data-reach-slider-handle] {
-  @apply bg-gray-100 active:bg-gray-400 w-6 h-6 rounded-full !important;
+  @apply bg-gray-100 active:bg-gray-400 w-4 h-4 rounded-full focus:outline-none focus:ring focus:ring-gray-500 !important;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }

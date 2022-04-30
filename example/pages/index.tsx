@@ -1,12 +1,22 @@
-import { forwardRef, HTMLProps, useState, RefObject, ReactElement } from 'react'
+import React, {
+  HTMLProps,
+  useState,
+  RefObject,
+  ReactElement,
+  useEffect,
+  ReactNode,
+} from 'react'
 import Head from 'next/head'
 import {
   SliderProps as ReachSliderProps,
-  Slider as ReachSlider,
+  SliderTrack,
+  SliderMarker,
+  SliderRange,
+  SliderHandle,
+  SliderInput,
 } from '@reach/slider'
 import '@reach/slider/styles.css'
 import { Rect } from '@reach/rect'
-import { useId } from '@reach/auto-id'
 import { saveAs } from 'file-saver'
 import copy from 'copy-to-clipboard'
 import toast, { Toaster } from 'react-hot-toast'
@@ -14,12 +24,8 @@ import { getSvgPath, FigmaSquircleParams } from '../../src'
 import GithubCorner from 'react-github-corner'
 
 export default function Home() {
-  const [size, setSize] = useState(300)
-  const [cornerRadius, setCornerRadius] = useState(48)
-  const [cornerSmoothing, setCornerSmoothing] = useState(0.8)
-
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 md:flex-row">
+    <div className="flex min-h-screen bg-gray-900">
       <Head>
         <title>Figma Squircle</title>
         <meta
@@ -29,7 +35,27 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="relative flex items-center justify-center flex-1">
+      <main className="flex flex-1">
+        <App />
+      </main>
+
+      <GithubCorner
+        href="https://github.com/tienphaw/figma-squircle"
+        direction="left"
+        bannerColor="#262626"
+      />
+    </div>
+  )
+}
+
+function App() {
+  const [size, setSize] = useState(300)
+  const [cornerRadius, setCornerRadius] = useState(48)
+  const [cornerSmoothing, setCornerSmoothing] = useState(0.8)
+
+  return (
+    <div className="flex flex-1 flex-col md:flex-row">
+      <div className="relative flex items-center justify-center flex-1">
         <Toaster
           toastOptions={{
             duration: 2400,
@@ -48,7 +74,7 @@ export default function Home() {
           width={size}
           height={size}
           xmlns="http://www.w3.org/2000/svg"
-          className="fill-current text-indigo-600"
+          className="fill-current text-violet-600"
         >
           <path
             d={`${getSvgPath({
@@ -59,64 +85,49 @@ export default function Home() {
             })}`}
           />
         </svg>
-      </main>
+      </div>
 
       {/* Sidebar */}
-      <div className="flex flex-col justify-between w-full bg-gray-800 md:min-h-screen min-h-1/2 md:w-80">
-        <div className="p-8">
-          {/* Header */}
-          <div className="hidden md:block">
-            <div className="flex flex-row items-center justify-center">
-              <img
-                src="/figma_logo.svg"
-                alt="Figma logo"
-                height={28}
-                width={20}
-              />
-              <div className="pl-2" />
-              <h1 className="text-2xl text-gray-400">Figma Squircle</h1>
-            </div>
-            <div className="pt-8" />
+      <div className="flex flex-col w-full bg-gray-800 md:min-h-screen min-h-1/2 md:w-80">
+        <div className="hidden md:block">
+          <div className="p-6 flex justify-center">
+            <img src="/logo.svg" alt="" />
           </div>
-
-          {/* Controls */}
-          <div>
-            <Slider
+          <hr className="border-gray-700" />
+        </div>
+        {/* Controls */}
+        <div className="p-6">
+          <div className="flex flex-row gap-4">
+            <NumberInput
               label="Size"
-              value={size}
-              onChange={setSize}
-              min={200}
+              initialValue={300}
+              min={100}
               max={400}
-              step={1}
+              onChange={setSize}
+              icon="/icon_size.svg"
             />
-
-            <div className="pt-8 md:pt-12" />
-
-            <Slider
-              label="Corner radius"
-              value={cornerRadius}
-              onChange={setCornerRadius}
-              min={10}
-              max={100}
-              step={1}
-            />
-
-            <div className="pt-8 md:pt-12" />
-
-            <Slider
-              label="Corner smoothing"
-              value={cornerSmoothing}
-              onChange={setCornerSmoothing}
+            <NumberInput
+              label="Radius"
+              initialValue={40}
               min={0}
-              max={1}
-              step={0.01}
+              onChange={setCornerRadius}
+              icon="/icon_radius.svg"
             />
           </div>
+          <div className="pt-8 md:pt-12" />
+
+          <CornerSmoothingSlider
+            value={cornerSmoothing}
+            onChange={setCornerSmoothing}
+          />
         </div>
 
-        <div className="flex flex-row p-8 md:flex-col">
+        <div className="flex flex-1" />
+
+        <hr className="hidden md:block border-gray-700" />
+        <div className="flex flex-row py-8 px-6 md:flex-col gap-4">
           <div className="flex-1">
-            <SolidButton
+            <SecondaryButton
               onClick={() => {
                 const svg = createSVG({
                   width: size,
@@ -132,12 +143,12 @@ export default function Home() {
                 saveAs(blob, 'squircle.svg')
               }}
             >
-              Save
-            </SolidButton>
+              Save Svg
+            </SecondaryButton>
           </div>
-          <div className="pl-4 md:pt-4" />
+
           <div className="flex-1">
-            <OutlineButton
+            <PrimaryButton
               onClick={() => {
                 const svg = createSVG({
                   width: size,
@@ -151,85 +162,178 @@ export default function Home() {
               }}
             >
               Copy
-            </OutlineButton>
+            </PrimaryButton>
           </div>
+          <span className="hidden md:block text-sm text-gray-400 font-semi-bold">
+            Try copy-pasting this into Figma and compare
+          </span>
         </div>
       </div>
-
-      <GithubCorner
-        href="https://github.com/tienphaw/figma-squircle"
-        direction="left"
-        bannerColor="#262626"
-      />
     </div>
   )
 }
 
-const OutlineButton = forwardRef<
-  HTMLButtonElement,
-  HTMLProps<HTMLButtonElement>
->((props, buttonRef) => {
+interface NumberInputProps {
+  label: string
+  onChange: (value: number) => void
+  initialValue: number
+  icon: string
+  min?: number
+  max?: number
+}
+
+function NumberInput({
+  label,
+  onChange,
+  initialValue,
+  icon,
+  min,
+  max,
+}: NumberInputProps) {
+  const [value, setValue] = useState<string | number>(initialValue)
+  const numericValue = Number(value)
+
+  function commitValue(value: number) {
+    if (min !== undefined) {
+      value = Math.max(min, value)
+    }
+
+    if (max !== undefined) {
+      value = Math.min(max, value)
+    }
+
+    setValue(value)
+    onChange(value)
+  }
+
   return (
-    <SquircleButtonContainer>
-      {({ squirclePath: outerSquirclePath, ref }) => {
-        return (
-          <div
-            ref={ref}
-            className="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-800"
-            style={{ padding: 2, clipPath: `path('${outerSquirclePath}')` }}
+    <div>
+      <label>
+        <span className="text-sm text-gray-400 uppercase font-semibold tracking-wider">
+          {label}
+        </span>
+        <div className="flex flex-row mt-1 relative block">
+          <SliderLabel
+            value={numericValue}
+            onChange={value => {
+              commitValue(value)
+            }}
           >
-            <SquircleButtonContainer>
-              {({ squirclePath: innerSquirclePath, ref }) => {
-                return (
-                  <div ref={ref}>
-                    <button
-                      {...props}
-                      className="w-full py-4 text-gray-100 bg-gray-800 focus:outline-none active:text-gray-600 text-md"
-                      ref={buttonRef}
-                      style={{ clipPath: `path('${innerSquirclePath}')` }}
-                      type="button"
-                    />
-                  </div>
-                )
-              }}
-            </SquircleButtonContainer>
-          </div>
+            <img
+              src={icon}
+              className="h-4 w-4 fill-slate-300"
+              alt=""
+              draggable={false}
+            />
+          </SliderLabel>
+          <input
+            value={value}
+            type="number"
+            onChange={e => setValue(e.target.value)}
+            onBlur={() => commitValue(numericValue)}
+            onKeyUp={e => {
+              if (e.code === 'Enter') {
+                commitValue(numericValue)
+              }
+            }}
+            className="transition py-2 pl-11 pr-3 text-gray-100 bg-gray-700 rounded-lg w-full focus:outline-none focus:border-gray-500 focus:ring-gray-500 focus:ring-1 appearance-none"
+            draggable={false}
+          />
+        </div>
+      </label>
+    </div>
+  )
+}
+
+interface SliderLabelProps {
+  value: number
+  onChange: (value: number) => void
+  children: ReactNode
+}
+
+// https://dev.to/graftini/how-to-change-numeric-input-by-dragging-in-react-315
+function SliderLabel({ value, onChange, children }: SliderLabelProps) {
+  const [initialX, setInitialX] = useState<number | null>(null)
+  const [snapshot, setSnapshot] = useState(value)
+
+  useEffect(() => {
+    function onUpdate(event: MouseEvent) {
+      if (initialX !== null) {
+        onChange(snapshot + event.clientX - initialX)
+      }
+    }
+
+    function onEnd() {
+      setInitialX(null)
+    }
+
+    document.addEventListener('mousemove', onUpdate)
+    document.addEventListener('mouseup', onEnd)
+
+    return () => {
+      document.removeEventListener('mousemove', onUpdate)
+      document.removeEventListener('mouseup', onEnd)
+    }
+  }, [initialX, onChange, snapshot])
+
+  return (
+    <span
+      className="absolute inset-y-0 left-0 flex items-center pl-4 cursor-ew-resize"
+      draggable={false}
+      onMouseDown={e => {
+        setInitialX(e.clientX)
+        setSnapshot(value)
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
+function PrimaryButton(props: HTMLProps<HTMLButtonElement>) {
+  return (
+    <SquircleContainer>
+      {({ squirclePath, ref }) => {
+        return (
+          <button
+            {...props}
+            className="transition w-full py-4 text-violet-100 bg-violet-600 focus:outline-none focus:bg-violet-500 hover:bg-violet-500 active:bg-violet-700 uppercase font-semibold tracking-wider text-sm"
+            style={{ clipPath: `path('${squirclePath}')` }}
+            type="button"
+            ref={ref}
+          />
         )
       }}
-    </SquircleButtonContainer>
+    </SquircleContainer>
   )
-})
+}
 
-const SolidButton = forwardRef<HTMLButtonElement, HTMLProps<HTMLButtonElement>>(
-  (props, buttonRef) => {
-    return (
-      <SquircleButtonContainer>
-        {({ squirclePath, ref }) => {
-          return (
-            <div ref={ref}>
-              <button
-                {...props}
-                className="w-full py-4 text-indigo-100 bg-indigo-600 focus:outline-none hover:bg-indigo-500 active:bg-indigo-700 text-md"
-                ref={buttonRef}
-                style={{ clipPath: `path('${squirclePath}')` }}
-                type="button"
-              />
-            </div>
-          )
-        }}
-      </SquircleButtonContainer>
-    )
-  }
-)
+function SecondaryButton(props: HTMLProps<HTMLButtonElement>) {
+  return (
+    <SquircleContainer>
+      {({ squirclePath, ref }) => {
+        return (
+          <button
+            {...props}
+            className="transition w-full py-4 text-gray-100 bg-gray-600 focus:outline-none focus:bg-gray-500 hover:bg-gray-500 active:bg-gray-700 uppercase font-semibold tracking-wider text-sm"
+            style={{ clipPath: `path('${squirclePath}')` }}
+            type="button"
+            ref={ref}
+          />
+        )
+      }}
+    </SquircleContainer>
+  )
+}
 
-interface SquircleButtonContainerProps {
+interface SquircleContainerProps {
   children: (args: {
     squirclePath: string
     ref: RefObject<any>
   }) => ReactElement
 }
 
-function SquircleButtonContainer({ children }: SquircleButtonContainerProps) {
+function SquircleContainer({ children }: SquircleContainerProps) {
   return (
     <Rect>
       {({ rect, ref }) => {
@@ -248,30 +352,36 @@ function SquircleButtonContainer({ children }: SquircleButtonContainerProps) {
   )
 }
 
-interface SliderProps extends ReachSliderProps {
-  label: string
-}
-
-function Slider({ label, value, ...rest }: SliderProps) {
-  const sliderId = useId()
-
+function CornerSmoothingSlider({ value, ...rest }: ReachSliderProps) {
   return (
     <div className="flex flex-col">
       <div className="flex flex-row items-center justify-between">
-        <label htmlFor={sliderId} className="text-gray-400">
-          {label}
+        <label className="text-sm text-gray-400 uppercase font-semibold tracking-wider">
+          Corner Smoothing
         </label>
         <span className="text-gray-200">{value}</span>
       </div>
-      <div className="pt-2" />
 
-      <div>
-        <ReachSlider
+      <div className="relative mt-2">
+        <SliderInput
           handleAlignment="contain"
+          getAriaLabel={() => 'Corner radius'}
           value={value}
-          id={sliderId}
+          min={0}
+          max={1}
+          step={0.01}
           {...rest}
-        />
+        >
+          <SliderTrack>
+            <SliderRange />
+            <SliderMarker value={0.6}>
+              <div className="w-0 flex justify-center pt-6 select-none">
+                <span className="text-s text-gray-400">iOS</span>
+              </div>
+            </SliderMarker>
+            <SliderHandle />
+          </SliderTrack>
+        </SliderInput>
       </div>
     </div>
   )
