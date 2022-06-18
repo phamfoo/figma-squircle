@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@reach/checkbox": "^0.17.0",
     "@reach/rect": "^0.15.0",
     "@reach/slider": "^0.15.0",
     "copy-to-clipboard": "^3.3.1",
