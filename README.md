@@ -19,12 +19,6 @@ This library helps you bring those squircles to your apps.
 ## Installation
 
 ```sh
-yarn add figma-squircle
-```
-
-or
-
-```sh
 npm install figma-squircle
 ```
 
@@ -74,41 +68,22 @@ function ProfilePicture() {
 }
 ```
 
-## Squircle Params
+## Preserve Smoothing
 
-### width
+This option allows corner smoothing to work better on large rounded corners.
 
-> `number` | **Required**
+```jsx
+const svgPath = getSvgPath({
+  width: 200,
+  height: 200,
+  cornerRadius: 80,
+  cornerSmoothing: 0.8,
+  // This is false by default
+  preserveSmoothing: true,
+})
+```
 
-### height
-
-> `number` | **Required**
-
-### cornerSmoothing
-
-> `number` | **Required**
-
-Goes from 0 to 1, controls how smooth the corners should be.
-
-### cornerRadius
-
-> `number` | defaults to `0`
-
-### topLeftCornerRadius
-
-> `number`
-
-### topRightCornerRadius
-
-> `number`
-
-### bottomRightCornerRadius
-
-> `number`
-
-### bottomLeftCornerRadius
-
-> `number`
+There's also a [Figma plugin](https://www.figma.com/community/plugin/1122437229616103296) you can install that utilizes this option.
 
 ## Thanks
 
