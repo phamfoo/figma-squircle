@@ -19,7 +19,7 @@ import { Rect } from '@reach/rect'
 import { saveAs } from 'file-saver'
 import copy from 'copy-to-clipboard'
 import toast, { Toaster } from 'react-hot-toast'
-import { getSvgPath, FigmaSquircleParams } from '../../src'
+import { getSvgPath, FigmaSquircleParams } from 'figma-squircle'
 import GithubCorner from 'react-github-corner'
 import {
   CustomCheckboxContainer,
@@ -96,7 +96,7 @@ function App() {
       <div className="flex flex-col w-full bg-gray-800 md:min-h-screen min-h-1/2 md:w-80">
         <div className="hidden md:block">
           <div className="p-6 flex justify-center">
-            <img src="/logo.svg" alt="" />
+            <img src="/logo.svg" alt="" width={160} height={24} />
           </div>
           <hr className="border-gray-700" />
         </div>
@@ -128,7 +128,7 @@ function App() {
           <div className="pt-8 md:pt-12" />
           <PreserveSmoothingCheckbox
             checked={preserveSmoothing}
-            onChange={e => setPreserveSmoothing(e.target.checked)}
+            onChange={(e) => setPreserveSmoothing(e.target.checked)}
           />
         </div>
 
@@ -248,7 +248,7 @@ function NumberInput({
       <div className="flex flex-row mt-1 relative block">
         <SliderLabel
           value={numericValue}
-          onChange={value => {
+          onChange={(value) => {
             commitValue(value)
           }}
         >
@@ -262,9 +262,9 @@ function NumberInput({
         <input
           value={value}
           type="number"
-          onChange={e => setValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
           onBlur={() => commitValue(numericValue)}
-          onKeyUp={e => {
+          onKeyUp={(e) => {
             if (e.code === 'Enter') {
               commitValue(numericValue)
             }
@@ -312,7 +312,7 @@ function SliderLabel({ value, onChange, children }: SliderLabelProps) {
     <span
       className="absolute inset-y-0 left-0 flex items-center pl-4 cursor-ew-resize select-none"
       draggable={false}
-      onMouseDown={e => {
+      onMouseDown={(e) => {
         setInitialX(e.clientX)
         setSnapshot(value)
       }}
@@ -376,7 +376,7 @@ function SquircleContainer({ children }: SquircleContainerProps) {
               cornerRadius: 0.25 * rect.height,
               cornerSmoothing: 1,
             })
-          : null
+          : ''
 
         return children({ ref, squirclePath })
       }}
