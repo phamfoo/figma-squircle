@@ -77,7 +77,7 @@ export function distributeAndNormalize({
               ? width
               : height
 
-          // If the adjacent corner's already given the rounding and smoothing budget,
+          // If the adjacent corner's already been given the rounding and smoothing budget,
           // we'll just take the rest
           if (adjacentCornerBudget >= 0) {
             return sideLength - roundingAndSmoothingBudgetMap[adjacent.corner]
