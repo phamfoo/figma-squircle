@@ -15,6 +15,13 @@ for (const node of figma.currentPage.selection) {
       fills,
     } = node
 
+    if (cornerSmoothing == 0) {
+      figma.notify(
+        `Please adjust Corner Smoothing of "${node.name}" to a value greater than 0%.`
+      )
+      continue
+    }
+
     const squirclePath = getSvgPath({
       width,
       height,
