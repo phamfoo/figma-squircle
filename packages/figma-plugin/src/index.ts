@@ -15,16 +15,6 @@ for (const node of figma.currentPage.selection) {
       fills,
     } = node
 
-    let fillColor = '#000000'
-    if (typeof fills === 'object' && fills.length > 0) {
-      const fill = fills[0]
-
-      if (fill.type === 'SOLID') {
-        const colorRGB = fill.color
-        fillColor = rgbToHex(colorRGB)
-      }
-    }
-
     const squirclePath = getSvgPath({
       width,
       height,
@@ -38,11 +28,14 @@ for (const node of figma.currentPage.selection) {
 
     const svg = `
       <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <path d="${squirclePath}" fill="${fillColor}" />
+        <path d="${squirclePath}" />
       </svg>`
 
     const svgFrameNode = figma.createNodeFromSvg(svg)
     const vectorNode = svgFrameNode.children[0]
+    if (vectorNode.type == 'VECTOR') {
+      vectorNode.fills = fills
+    }
     vectorNode.x = x + width * 1.25
     vectorNode.y = y
 
@@ -52,19 +45,6 @@ for (const node of figma.currentPage.selection) {
   } else {
     figma.notify('Please select a rectangle')
   }
-}
-
-// This function converts Figma RGB to hex
-function rgbToHex(colorRGB: RGB) {
-  return (
-    '#' +
-    [colorRGB.r, colorRGB.g, colorRGB.b]
-      .map((c) => {
-        const hex = Math.floor(c * 255).toString(16)
-        return hex.length == 1 ? '0' + hex : hex
-      })
-      .join('')
-  )
 }
 
 figma.closePlugin()
