@@ -1,7 +1,13 @@
 import { getSvgPath } from 'figma-squircle'
 
 for (const node of figma.currentPage.selection) {
-  if (node.type === 'RECTANGLE') {
+  if (node.type !== 'RECTANGLE') {
+    figma.notify('Please select a rectangle')
+  } else if (node.cornerSmoothing == 0) {
+    figma.notify(
+      `Please adjust Corner Smoothing of "${node.name}" to a value greater than 0%.`
+    )
+  } else {
     const {
       width,
       height,
@@ -14,13 +20,6 @@ for (const node of figma.currentPage.selection) {
       bottomRightRadius,
       fills,
     } = node
-
-    if (cornerSmoothing == 0) {
-      figma.notify(
-        `Please adjust Corner Smoothing of "${node.name}" to a value greater than 0%.`
-      )
-      continue
-    }
 
     const squirclePath = getSvgPath({
       width,
@@ -49,8 +48,6 @@ for (const node of figma.currentPage.selection) {
     const parentNode = node.parent ?? figma.currentPage
     parentNode.appendChild(vectorNode)
     svgFrameNode.remove()
-  } else {
-    figma.notify('Please select a rectangle')
   }
 }
 
