@@ -61,9 +61,8 @@ export function distributeAndNormalize({
 
       // Look at the 2 adjacent sides, figure out how much space we can have on both sides,
       // then take the smaller one
-      const budget = Math.min.apply(
-        null,
-        adjacents.map((adjacent) => {
+      const budget = Math.min(
+        ...adjacents.map((adjacent) => {
           const adjacentCornerRadius = cornerRadiusMap[adjacent.corner]
           if (radius === 0 && adjacentCornerRadius === 0) {
             return 0
