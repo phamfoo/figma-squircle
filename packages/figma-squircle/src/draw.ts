@@ -135,14 +135,14 @@ function drawTopRightPath({
   arcSectionLength,
 }: CornerPathParams) {
   if (cornerRadius) {
-    return `
+    return rounded`
     c ${a} 0 ${a + b} 0 ${a + b + c} ${d}
     a ${cornerRadius} ${cornerRadius} 0 0 1 ${arcSectionLength} ${arcSectionLength}
     c ${d} ${c}
         ${d} ${b + c}
         ${d} ${a + b + c}`
   } else {
-    return `l ${p} 0`
+    return rounded`l ${p} 0`
   }
 }
 
@@ -156,7 +156,7 @@ function drawBottomRightPath({
   arcSectionLength,
 }: CornerPathParams) {
   if (cornerRadius) {
-    return `
+    return rounded`
     c 0 ${a}
       0 ${a + b}
       ${-d} ${a + b + c}
@@ -165,7 +165,7 @@ function drawBottomRightPath({
       ${-(b + c)} ${d}
       ${-(a + b + c)} ${d}`
   } else {
-    return `l 0 ${p}`
+    return rounded`l 0 ${p}`
   }
 }
 
@@ -179,7 +179,7 @@ function drawBottomLeftPath({
   arcSectionLength,
 }: CornerPathParams) {
   if (cornerRadius) {
-    return `
+    return rounded`
     c ${-a} 0
       ${-(a + b)} 0
       ${-(a + b + c)} ${-d}
@@ -188,7 +188,7 @@ function drawBottomLeftPath({
       ${-d} ${-(b + c)}
       ${-d} ${-(a + b + c)}`
   } else {
-    return `l ${-p} 0`
+    return rounded`l ${-p} 0`
   }
 }
 
@@ -202,7 +202,7 @@ function drawTopLeftPath({
   arcSectionLength,
 }: CornerPathParams) {
   if (cornerRadius) {
-    return `
+    return rounded`
     c 0 ${-a}
       0 ${-(a + b)}
       ${d} ${-(a + b + c)}
@@ -211,10 +211,22 @@ function drawTopLeftPath({
       ${b + c} ${-d}
       ${a + b + c} ${-d}`
   } else {
-    return `l 0 ${-p}`
+    return rounded`l 0 ${-p}`
   }
 }
 
 function toRadians(degrees: number) {
   return (degrees * Math.PI) / 180
+}
+
+function rounded(strings: TemplateStringsArray, ...values: any[]): string {
+  return strings.reduce((acc, str, i) => {
+    let value = values[i]
+
+    if (typeof value === 'number') {
+      return acc + str + value.toFixed(4)
+    } else {
+      return acc + str + (value ?? '')
+    }
+  }, '')
 }
