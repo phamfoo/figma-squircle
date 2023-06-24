@@ -44,7 +44,7 @@ export default function Home() {
       </main>
 
       <GithubCorner
-        href="https://github.com/tienphaw/figma-squircle"
+        href="https://github.com/phamfoo/figma-squircle"
         direction="left"
         bannerColor="#262626"
       />

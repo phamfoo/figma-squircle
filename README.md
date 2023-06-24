@@ -92,4 +92,4 @@ There's also a [Figma plugin](https://www.figma.com/community/plugin/11224372296
 
 ## Related
 
-- https://github.com/tienphaw/react-native-figma-squircle
+- https://github.com/phamfoo/react-native-figma-squircle
