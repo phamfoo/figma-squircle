@@ -12,7 +12,7 @@
 
 Figma has a great feature called [corner smoothing](https://help.figma.com/hc/en-us/articles/360050986854-Adjust-corner-radius-and-smoothing), allowing you to create rounded shapes with a seamless continuous curve (squircles).
 
-![](demo.png)
+![](squircle.jpg)
 
 This library helps you bring those squircles to your apps.
 
@@ -70,7 +70,9 @@ function ProfilePicture() {
 
 ## Preserve Smoothing
 
-This option allows corner smoothing to work better on large rounded corners.
+The larger the corner radius, the less space we have left to make a smooth transition from the straight line to the rounded corner. As a result, you might have noticed that the smoothing effect appears to be less pronounced as the radius gets bigger.
+
+Try enabling `preserveSmoothing` if you're not happy with the generated shape. 
 
 ```jsx
 const svgPath = getSvgPath({
@@ -78,12 +80,11 @@ const svgPath = getSvgPath({
   height: 200,
   cornerRadius: 80,
   cornerSmoothing: 0.8,
-  // This is false by default
-  preserveSmoothing: true,
+  preserveSmoothing: true, // defaults to false
 })
 ```
 
-There's also a [Figma plugin](https://www.figma.com/community/plugin/1122437229616103296) you can install that utilizes this option.
+There's also a [Figma plugin](https://www.figma.com/community/plugin/1122437229616103296) that utilizes this option.
 
 ## Thanks
 
