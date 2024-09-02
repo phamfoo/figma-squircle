@@ -1,26 +1,35 @@
 {
   "name": "figma-squircle",
-  "private": true,
-  "workspaces": [
-    "packages/*",
-    "config/*"
-  ],
+  "description": "Figma-flavored squircles for everyone",
+  "type": "module",
+  "author": "Tien Pham",
+  "version": "0.3.1",
+  "license": "MIT",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\" --ignore-path .gitignore",
-    "prepare": "husky install"
+    "lint": "eslint",
+    "build": "tsc",
+    "prepare": "npm run build"
   },
   "devDependencies": {
-    "parcel": "^2.6.2",
-    "@parcel/packager-ts": "^2.6.2",
-    "@parcel/transformer-typescript-types": "^2.6.2",
-    "eslint": "^7.32.0",
-    "eslint-config-next": "^12.0.8",
-    "husky": "^8.0.0",
-    "prettier": "^2.7.1",
-    "turbo": "^1.3.1",
-    "typescript": "^4.7.4"
+    "typescript": "^5.5.4",
+    "prettier": "^3.3.3",
+    "eslint": "^9.9.1",
+    "@eslint/js": "^9.9.1",
+    "typescript-eslint": "^8.3.0"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "squircle",
+    "react",
+    "figma"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phamfoo/figma-squircle.git"
   }
 }

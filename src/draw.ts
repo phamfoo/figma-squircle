@@ -219,9 +219,9 @@ function toRadians(degrees: number) {
   return (degrees * Math.PI) / 180
 }
 
-function rounded(strings: TemplateStringsArray, ...values: any[]): string {
+function rounded(strings: TemplateStringsArray, ...values: number[]): string {
   return strings.reduce((acc, str, i) => {
-    let value = values[i]
+    const value = values[i]
 
     if (typeof value === 'number') {
       return acc + str + value.toFixed(4)

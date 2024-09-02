@@ -1,7 +1,0 @@
-{
-  "name": "Smoothing Uncapped",
-  "id": "1122437229616103296",
-  "api": "1.0.0",
-  "main": "dist/index.js",
-  "editorType": ["figma"]
-}
