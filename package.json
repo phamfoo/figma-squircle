@@ -3,7 +3,7 @@
   "description": "Figma-flavored squircles for everyone",
   "type": "module",
   "author": "Tien Pham",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "source": "src/index.ts",
   "main": "dist/index.js",
